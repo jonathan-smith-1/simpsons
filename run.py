@@ -19,6 +19,8 @@ embed_dim = config['embed_dim']
 seq_length = config['seq_length']
 learning_rate = config['learning_rate']
 show_every_n_batches = config['show_every_n_batches']
+dropout_keep_prob = config['dropout_keep_prob']
+lstm_layers = config['lstm_layers']
 
 save_dir = './save'
 
@@ -31,7 +33,7 @@ with train_graph.as_default():
     vocab_size = len(int_to_vocab)
     input_text, targets, lr = get_inputs()
     input_data_shape = tf.shape(input_text)
-    cell, initial_state = get_init_cell(input_data_shape[0], rnn_size)   # input_data_shape[0] is the batch size
+    cell, initial_state = get_init_cell(input_data_shape[0], rnn_size, dropout_keep_prob, lstm_layers)
     logits, final_state = build_nn(cell, rnn_size, input_text, vocab_size, embed_dim)
 
     # Probabilities for generating words
