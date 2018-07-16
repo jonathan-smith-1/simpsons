@@ -2,33 +2,28 @@ import tensorflow as tf
 from tensorflow.contrib import seq2seq
 from functions import get_inputs, get_init_cell, build_nn, get_batches
 import helper
+import yaml
 
-int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 
-# Build the neural network
+# Config
+with open("config.yml", 'r') as stream:
+    try:
+        config = yaml.load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
 
-# Number of Epochs
-num_epochs = 1 #150
-
-# Batch Size
-batch_size = 2 #256
-
-# RNN Size
-rnn_size = 5 #512
-
-# Embedding Dimension Size
-embed_dim = 10 #256
-
-# Sequence Length
-seq_length = 10
-
-# Learning Rate
-learning_rate = 0.01
-
-# Show stats for every n number of batches
-show_every_n_batches = 100
+num_epochs = config['num_epochs']
+batch_size = config['batch_size']
+rnn_size = config['rnn_size']
+embed_dim = config['embed_dim']
+seq_length = config['seq_length']
+learning_rate = config['learning_rate']
+show_every_n_batches = config['show_every_n_batches']
 
 save_dir = './save'
+
+# Get preprocesed data
+int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 
 train_graph = tf.Graph()
 
