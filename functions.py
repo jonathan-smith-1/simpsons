@@ -1,6 +1,4 @@
-import helper
 import numpy as np
-import problem_unittests as tests
 import tensorflow as tf
 
 
@@ -9,7 +7,6 @@ def get_inputs():
     Create TF Placeholders for input, targets, and learning rate.
     :return: Tuple (input, targets, learning rate)
     """
-    # TODO: Implement Function
     input_ = tf.placeholder(tf.int32, shape=(None, None), name='input')
     targets = tf.placeholder(tf.int32, shape=(None, None), name='target')
     learning_rate = tf.placeholder(tf.float32)
@@ -23,7 +20,7 @@ def build_cell(num_units, keep_prob):
     return drop
 
 
-def get_init_cell(batch_size, rnn_size, keep_prob=1.0, lstm_layers=2):
+def get_init_cell(batch_size, rnn_size, keep_prob, lstm_layers):
     """
     Create an RNN Cell and initialize it.
     :param batch_size: Size of batches
@@ -33,7 +30,6 @@ def get_init_cell(batch_size, rnn_size, keep_prob=1.0, lstm_layers=2):
     :keep_prob: Dropout keep probability
     :lstm_layers: Number of lstm layers
     """
-    # TODO: Implement Function
 
     cell = tf.contrib.rnn.MultiRNNCell(
         [build_cell(rnn_size, keep_prob) for _ in range(lstm_layers)])
@@ -52,8 +48,6 @@ def get_embed(input_data, vocab_size, embed_dim):
     :return: Embedded input.
     """
 
-    # TODO: Implement Function
-
     # use get_variable to get default Xavier initializer
     embedding = tf.get_variable('embedding', (vocab_size, embed_dim))
     embed = tf.nn.embedding_lookup(embedding, input_data)
@@ -68,7 +62,7 @@ def build_rnn(cell, inputs):
     :param inputs: Input text data
     :return: Tuple (Outputs, Final State)
     """
-    # TODO: Implement Function
+
     outputs, final_state = tf.nn.dynamic_rnn(cell, inputs, dtype=tf.float32)
 
     final_state = tf.identity(final_state, 'final_state')
@@ -86,7 +80,6 @@ def build_nn(cell, rnn_size, input_data, vocab_size, embed_dim):
     :param embed_dim: Number of embedding dimensions
     :return: Tuple (Logits, FinalState)
     """
-    # TODO: Implement Function
 
     # apply embedding to input
     embed_input = get_embed(input_data, vocab_size, embed_dim)
@@ -109,7 +102,6 @@ def get_batches(int_text, batch_size, seq_length):
     :param seq_length: The length of sequence
     :return: Batches as a Numpy array
     """
-    # TODO: Implement Function
 
     elements_per_batch = batch_size * seq_length
     n_batches = len(int_text) // elements_per_batch
