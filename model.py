@@ -13,10 +13,11 @@ class RNN:
 
         Args:
             int_to_vocab: Dictionary mapping integers to words in vocabulary.
-            rnn_size: Integer size (i.e. dimensions) of all layers in RNN.
-            dropout_keep_prob: Dropout
-            lstm_layers: Number of layers.
-            embed_dim: Embedding dimension.
+            rnn_size (int): Integer size (i.e. dimensions) of all layers in
+                            RNN.
+            dropout_keep_prob (float): Dropout keep probability.
+            lstm_layers (int): Number of layers.
+            embed_dim (int): Embedding dimension.
         """
 
         self.train_graph = tf.Graph()
@@ -61,17 +62,19 @@ class RNN:
             self.train_op = optimizer.apply_gradients(capped_gradients)
 
     def train(self, num_epochs, batches, show_every_n_batches,
-              learning_rate, save_dir):
+              learning_rate, save_dir, verbose=False):
 
         """
         Train the Recurrent Neural Network.
 
         Args:
-            num_epochs: Number of epochs to train.
-            batches: Input data already processed into batches.
-            show_every_n_batches: Show progress every n batches.
-            learning_rate: Learning rate for training.
-            save_dir: Location where checkpoint is saved.
+            num_epochs (int): Number of epochs to train.
+            batches (numpy array): Input data already processed into batches
+                                   by function.get_batches().
+            show_every_n_batches (int): Show progress every n batches.
+            learning_rate (float): Learning rate for training.
+            save_dir (string): Location where checkpoint is saved.
+            verbose (bool): Print outputs
 
         Returns:
             Nothing
@@ -92,7 +95,7 @@ class RNN:
                     train_loss, state, _ = sess.run([self.cost, self.final_state, self.train_op], feed)
 
                     # Show every <show_every_n_batches> batches
-                    if (epoch_i * len(batches) + batch_i) % show_every_n_batches == 0:
+                    if verbose and (epoch_i * len(batches) + batch_i) % show_every_n_batches == 0:
                         print('Epoch {:>3} Batch {:>4}/{}   train_loss = {:.3f}'.format(
                             epoch_i,
                             batch_i,
@@ -102,4 +105,5 @@ class RNN:
             # Save Model
             saver = tf.train.Saver()
             saver.save(sess, save_dir)
-            print('Model Trained and Saved')
+            if verbose:
+                print('Model Trained and Saved')
