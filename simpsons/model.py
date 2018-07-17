@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.contrib import seq2seq
-from functions import get_inputs, get_init_cell, build_nn
+from simpsons.functions import get_inputs, get_init_cell, build_nn
 
 
 class RNN:

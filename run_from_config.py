@@ -1,7 +1,7 @@
-from functions import get_batches
-import helper
 import yaml
-from model import RNN
+from simpsons.functions import get_batches
+import simpsons.helper as helper
+from simpsons.model import RNN
 
 # Config
 with open("config.yml", 'r') as stream:
@@ -24,7 +24,7 @@ lstm_layers = config['lstm_layers']
 save_dir = './save'
 
 
-# Get preprocesed data
+# Get pre-procesed data
 int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 
 batches = get_batches(int_text, batch_size, seq_length)
