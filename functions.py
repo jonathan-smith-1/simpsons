@@ -101,6 +101,49 @@ def get_batches(int_text, batch_size, seq_length):
     :param batch_size: The size of batch
     :param seq_length: The length of sequence
     :return: Batches as a Numpy array
+
+    The batches should be a Numpy array with the shape `(number of batches,
+    2, batch size, sequence length)`. Each batch contains two elements:
+    - The first element is a single batch of **input** with the shape
+    `[batch size, sequence length]`
+    - The second element is a single batch of **targets** with the shape
+    `[batch size, sequence length]`
+
+    If you can't fill the last batch with enough data, drop the last batch.
+
+    For example, `get_batches([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    14, 15, 16, 17, 18, 19, 20], 3, 2)` would return a Numpy array of the
+    following:
+
+    [
+      # First Batch
+      [
+        # Batch of Input
+        [[ 1  2], [ 7  8], [13 14]]
+        # Batch of targets
+        [[ 2  3], [ 8  9], [14 15]]
+      ]
+
+      # Second Batch
+      [
+        # Batch of Input
+        [[ 3  4], [ 9 10], [15 16]]
+        # Batch of targets
+        [[ 4  5], [10 11], [16 17]]
+      ]
+
+      # Third Batch
+      [
+        # Batch of Input
+        [[ 5  6], [11 12], [17 18]]
+        # Batch of targets
+        [[ 6  7], [12 13], [18  1]]
+      ]
+    ]
+
+
+    Notice that the last target value in the last batch is the first input
+    value of the first batch. In this case, `1`.
     """
 
     elements_per_batch = batch_size * seq_length
