@@ -4,8 +4,10 @@ import tensorflow as tf
 
 def get_inputs():
     """
-    Create TF Placeholders for input, targets, and learning rate.
-    :return: Tuple (input, targets, learning rate)
+    Create Tensorflow Placeholders for input, targets, and learning rate.
+
+    Returns: Tuple (input, targets, learning rate)
+
     """
     input_ = tf.placeholder(tf.int32, shape=(None, None), name='input')
     targets = tf.placeholder(tf.int32, shape=(None, None), name='target')
@@ -22,16 +24,22 @@ def build_cell(num_units, keep_prob):
 
 def get_init_cell(batch_size, rnn_size, keep_prob, lstm_layers):
     """
-    Create an RNN Cell and initialize it.
-    :param batch_size: Size of batches
-    :param rnn_size: Size of RNNs
-    :return: Tuple (cell, initialize state)
+    Create a multi-layered RNN Cell and initialize it.
 
-    :keep_prob: Dropout keep probability
-    :lstm_layers: Number of lstm layers
+    Args:
+        batch_size (int): Size of batches
+        rnn_size (int): Size of RNN, i.e how many units.
+        keep_prob (float): Dropout keep probability, in [0.0, 1.0].
+        lstm_layers: Number of LSTM layers.
+
+    Returns:
+        Tuple (cell, initialize state).  The initialize state tensor is the
+        state input to the RNN
+
     """
+    # TODO - Investigate the init state - should be integrated in rnn, not cell
 
-    cell = tf.contrib.rnn.MultiRNNCell(
+    cell = tf.nn.rnn_cell.MultiRNNCell(
         [build_cell(rnn_size, keep_prob) for _ in range(lstm_layers)])
     initial_state = cell.zero_state(batch_size, tf.float32)
     initial_state = tf.identity(initial_state, name='initial_state')
@@ -57,10 +65,14 @@ def get_embed(input_data, vocab_size, embed_dim):
 
 def build_rnn(cell, inputs):
     """
-    Create a RNN using a RNN Cell
-    :param cell: RNN Cell
-    :param inputs: Input text data
-    :return: Tuple (Outputs, Final State)
+    Create a RNN using a RNN Cell.
+
+    Args:
+        cell: A RNN cell that forms the basis of this RNN.
+        inputs: Tensor of input data to the RNN
+
+    Returns: Tuple (Outputs, Final State)
+
     """
 
     outputs, final_state = tf.nn.dynamic_rnn(cell, inputs, dtype=tf.float32)
@@ -70,15 +82,18 @@ def build_rnn(cell, inputs):
     return outputs, final_state
 
 
-def build_nn(cell, rnn_size, input_data, vocab_size, embed_dim):
+def build_nn(cell, input_data, vocab_size, embed_dim):
     """
-    Build part of the neural network
-    :param cell: RNN cell
-    :param rnn_size: Size of rnns (i.e number of hidden units)
-    :param input_data: Input data
-    :param vocab_size: Vocabulary size
-    :param embed_dim: Number of embedding dimensions
-    :return: Tuple (Logits, FinalState)
+    Build part of the neural network.
+
+    Args:
+        cell: RNN cell
+        input_data: Input data
+        vocab_size: Vocabulary size
+        embed_dim: Number of embedding dimensions
+
+    Returns: Tuple (Logits, FinalState)
+
     """
 
     # apply embedding to input
@@ -97,21 +112,30 @@ def build_nn(cell, rnn_size, input_data, vocab_size, embed_dim):
 def get_batches(int_text, batch_size, seq_length):
     """
     Return batches of input and target
-    :param int_text: Text with the words replaced by their ids
-    :param batch_size: The size of batch
-    :param seq_length: The length of sequence
-    :return: Batches as a Numpy array
 
-    The batches should be a Numpy array with the shape `(number of batches,
-    2, batch size, sequence length)`. Each batch contains two elements:
-    - The first element is a single batch of **input** with the shape
-    `[batch size, sequence length]`
-    - The second element is a single batch of **targets** with the shape
-    `[batch size, sequence length]`
+    Args:
+        int_text: Text with the words replaced by their ids
+        batch_size: The size of batch
+        seq_length: The length of sequence
 
-    If you can't fill the last batch with enough data, drop the last batch.
+    Returns:
+        Batches as a Numpy array.
 
-    For example, `get_batches([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    The returned batches are a Numpy array with the shape
+    (number of batches, 2, batch size, sequence length).
+
+    Each batch contains two elements (corresponding to positions 0 and 1 on
+    axis 1 of the returned batches):
+    - The first element is a single batch of inputs with the shape
+    [batch size, sequence length]
+    - The second element is a single batch of targets with the shape
+    [batch size, sequence length]
+
+    The last batch is dropped if there is insufficient data.
+
+    For example,
+
+    `get_batches([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     14, 15, 16, 17, 18, 19, 20], 3, 2)` would return a Numpy array of the
     following:
 
@@ -140,7 +164,6 @@ def get_batches(int_text, batch_size, seq_length):
         [[ 6  7], [12 13], [18  1]]
       ]
     ]
-
 
     Notice that the last target value in the last batch is the first input
     value of the first batch. In this case, `1`.

@@ -1,3 +1,5 @@
+# This code was provided by Udacity as part of the Deep Learning Nanodegree
+
 import os
 import pickle
 
