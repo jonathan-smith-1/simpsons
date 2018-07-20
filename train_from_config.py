@@ -24,11 +24,11 @@ lstm_layers = config['lstm_layers']
 save_dir = './save'
 
 
+
 # Get pre-procesed data
 int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 
 batches = get_batches(int_text, batch_size, seq_length)
-#batches = batches[:200]   # TODO - remove this
 
 rnn = RNN(int_to_vocab, rnn_size, dropout_keep_prob, lstm_layers, embed_dim, batch_size)
 

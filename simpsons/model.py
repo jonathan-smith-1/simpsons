@@ -21,6 +21,10 @@ class RNN:
             embed_dim (int): Embedding dimension.
         """
 
+        self.lstm_layers = lstm_layers
+        self.batch_size = batch_size
+        self.rnn_size = rnn_size
+
         self.train_graph = tf.Graph()
 
         with self.train_graph.as_default():
@@ -33,7 +37,7 @@ class RNN:
 
             # Unpack the shape of what the RNN outputs (array) to the shape that the RNN expects in its next training
             #  step (tuples)
-            self.init_state = tf.placeholder(tf.float32, [lstm_layers, 2, batch_size, rnn_size])
+            self.init_state = tf.placeholder(tf.float32, [lstm_layers, 2, None, rnn_size], name='initial_state')
 
             state_per_layer_list = tf.unstack(self.init_state, axis=0)
 
@@ -94,17 +98,15 @@ class RNN:
             sess.run(tf.global_variables_initializer())
 
             for epoch_i in range(num_epochs):
-                initial_state = np.zeros(sess.run(tf.shape(self.init_state)))
+                state = np.zeros([self.lstm_layers, 2, self.batch_size, self.rnn_size])  # init
 
                 for batch_i, (x, y) in enumerate(batches):
                     feed = {
                         self.input_text: x,
                         self.targets: y,
-                        self.init_state: initial_state,
+                        self.init_state: state,
                         self.lr: learning_rate}
-                    train_loss, final_state, _ = sess.run([self.cost, self.final_state, self.train_op], feed)
-
-                    initial_state = final_state
+                    train_loss, state, _ = sess.run([self.cost, self.final_state, self.train_op], feed)
 
                     # Show every <show_every_n_batches> batches
                     if verbose and (epoch_i * len(batches) + batch_i) % show_every_n_batches == 0:
