@@ -28,8 +28,8 @@ save_dir = './save'
 int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 
 batches = get_batches(int_text, batch_size, seq_length)
-batches = batches[:200]   # TODO - remove this
+#batches = batches[:200]   # TODO - remove this
 
-rnn = RNN(int_to_vocab, rnn_size, dropout_keep_prob, lstm_layers, embed_dim)
+rnn = RNN(int_to_vocab, rnn_size, dropout_keep_prob, lstm_layers, embed_dim, batch_size)
 
-rnn.train(num_epochs, batches, show_every_n_batches, learning_rate, save_dir)
+rnn.train(num_epochs, batches, show_every_n_batches, learning_rate, save_dir, verbose=True)
