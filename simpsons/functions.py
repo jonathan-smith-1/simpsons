@@ -41,10 +41,8 @@ def get_init_cell(batch_size, rnn_size, keep_prob, lstm_layers):
 
     cell = tf.nn.rnn_cell.MultiRNNCell(
         [build_cell(rnn_size, keep_prob) for _ in range(lstm_layers)])
-    initial_state = cell.zero_state(batch_size, tf.float32)
-    initial_state = tf.identity(initial_state, name='initial_state')
 
-    return cell, initial_state
+    return cell
 
 
 def get_embed(input_data, vocab_size, embed_dim):
@@ -63,32 +61,34 @@ def get_embed(input_data, vocab_size, embed_dim):
     return embed
 
 
-def build_rnn(cell, inputs):
+def build_rnn(cell, initial_state, inputs):
     """
     Create a RNN using a RNN Cell.
 
     Args:
         cell: A RNN cell that forms the basis of this RNN.
+        initial_state: Initial state for next run of the network
         inputs: Tensor of input data to the RNN
 
     Returns: Tuple (Outputs, Final State)
 
     """
 
-    outputs, final_state = tf.nn.dynamic_rnn(cell, inputs, dtype=tf.float32)
+    outputs, final_state = tf.nn.dynamic_rnn(cell, inputs, initial_state=initial_state, dtype=tf.float32)
 
     final_state = tf.identity(final_state, 'final_state')
 
     return outputs, final_state
 
 
-def build_nn(cell, input_data, vocab_size, embed_dim):
+def build_nn(cell, initial_state, input_data, vocab_size, embed_dim):
     """
     Build part of the neural network.
 
     Args:
         cell: RNN cell
         input_data: Input data
+        initial_state: Initial state for next run of the network
         vocab_size: Vocabulary size
         embed_dim: Number of embedding dimensions
 
@@ -100,7 +100,7 @@ def build_nn(cell, input_data, vocab_size, embed_dim):
     embed_input = get_embed(input_data, vocab_size, embed_dim)
 
     # build rnn
-    outputs, final_state = build_rnn(cell, embed_input)
+    outputs, final_state = build_rnn(cell, initial_state, embed_input)
 
     # Connect the RNN outputs to a linear output layer
     logits = tf.contrib.layers.fully_connected(outputs, vocab_size,

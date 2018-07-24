@@ -52,14 +52,16 @@ class ScriptGenerator:
 
             # Sentences generation setup
             gen_sentences = [prime_word + ':']
-            prev_state = sess.run(initial_state, {input_text: np.array([[1]])})
+            batch_size = 1
+            lstm_layers = 2  # TODO - Remove this
+            rnn_size = 512  # TODO - Remove this
+            prev_state = state = np.zeros([lstm_layers, 2, batch_size, rnn_size])  # init
 
             # Generate sentences
             for n in range(gen_length):
                 # Dynamic Input
                 dyn_input = [
-                    [self.vocab_to_int[word] for word in gen_sentences[
-                                                       -self.seq_length:]]]
+                    [self.vocab_to_int[word] for word in gen_sentences[-self.seq_length:]]]
                 dyn_seq_length = len(dyn_input[0])
 
                 # Get Prediction
@@ -67,9 +69,7 @@ class ScriptGenerator:
                     [probs, final_state],
                     {input_text: dyn_input, initial_state: prev_state})
 
-                pred_word = self.pick_word(probabilities[0][dyn_seq_length -
-                                                            1],
-                                           self.int_to_vocab)
+                pred_word = self.pick_word(probabilities[0][dyn_seq_length-1], self.int_to_vocab)
 
                 gen_sentences.append(pred_word)
 

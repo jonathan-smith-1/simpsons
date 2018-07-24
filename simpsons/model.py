@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 from tensorflow.contrib import seq2seq
 from simpsons.functions import get_inputs, get_init_cell, build_nn
 
@@ -7,7 +8,7 @@ class RNN:
     """Recurrent Neural Network for text sequence generation"""
 
     def __init__(self, int_to_vocab, rnn_size, dropout_keep_prob,
-                 lstm_layers, embed_dim):
+                 lstm_layers, embed_dim, batch_size):
         """
         Construct Recurrent Neural Network.
 
@@ -20,6 +21,10 @@ class RNN:
             embed_dim (int): Embedding dimension.
         """
 
+        self.lstm_layers = lstm_layers
+        self.batch_size = batch_size
+        self.rnn_size = rnn_size
+
         self.train_graph = tf.Graph()
 
         with self.train_graph.as_default():
@@ -30,12 +35,21 @@ class RNN:
 
             input_data_shape = tf.shape(self.input_text)
 
-            cell, self.initial_state = get_init_cell(input_data_shape[0],
-                                                     rnn_size,
-                                                     dropout_keep_prob,
-                                                     lstm_layers)
+            # Unpack the shape of what the RNN outputs (array) to the shape that the RNN expects in its next training
+            #  step (tuples)
+            self.init_state = tf.placeholder(tf.float32, [lstm_layers, 2, None, rnn_size], name='initial_state')
+
+            state_per_layer_list = tf.unstack(self.init_state, axis=0)
+
+            rnn_tuple_state = tuple(
+                [tf.nn.rnn_cell.LSTMStateTuple(state_per_layer_list[idx][0], state_per_layer_list[idx][1])
+                 for idx in range(lstm_layers)]
+            )
+
+            cell = get_init_cell(input_data_shape[0], rnn_size, dropout_keep_prob, lstm_layers)
 
             logits, self.final_state = build_nn(cell,
+                                                rnn_tuple_state,
                                                 self.input_text,
                                                 vocab_size,
                                                 embed_dim)
@@ -84,13 +98,13 @@ class RNN:
             sess.run(tf.global_variables_initializer())
 
             for epoch_i in range(num_epochs):
-                state = sess.run(self.initial_state, {self.input_text: batches[0][0]})
+                state = np.zeros([self.lstm_layers, 2, self.batch_size, self.rnn_size])  # init
 
                 for batch_i, (x, y) in enumerate(batches):
                     feed = {
                         self.input_text: x,
                         self.targets: y,
-                        self.initial_state: state,
+                        self.init_state: state,
                         self.lr: learning_rate}
                     train_loss, state, _ = sess.run([self.cost, self.final_state, self.train_op], feed)
 
