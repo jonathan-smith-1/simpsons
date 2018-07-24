@@ -7,3 +7,4 @@ learning_rate: 0.01
 show_every_n_batches: 100
 dropout_keep_prob: 0.9
 lstm_layers: 2
+save_dir: './save'

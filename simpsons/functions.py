@@ -109,14 +109,13 @@ def build_nn(cell, initial_state, input_data, vocab_size, embed_dim):
     return logits, final_state
 
 
-def get_batches(int_text, batch_size, seq_length):
+def get_batches(int_text, config):
     """
     Return batches of input and target
 
     Args:
         int_text: Text with the words replaced by their ids
-        batch_size: The size of batch
-        seq_length: The length of sequence
+        config: Dictionary of parameters.
 
     Returns:
         Batches as a Numpy array.
@@ -168,6 +167,8 @@ def get_batches(int_text, batch_size, seq_length):
     Notice that the last target value in the last batch is the first input
     value of the first batch. In this case, `1`.
     """
+    batch_size = config['batch_size']
+    seq_length = config['seq_length']
 
     elements_per_batch = batch_size * seq_length
     n_batches = len(int_text) // elements_per_batch
