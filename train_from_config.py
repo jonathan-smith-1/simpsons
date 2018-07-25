@@ -19,4 +19,4 @@ batches = get_batches(int_text, config)
 
 rnn = RNN(int_to_vocab, config)
 
-rnn.train(batches, config, verbose=True)
+rnn.train(config, batches, verbose=True)

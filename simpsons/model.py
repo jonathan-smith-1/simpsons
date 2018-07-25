@@ -73,15 +73,19 @@ class RNN:
 
             self.train_op = optimizer.apply_gradients(capped_gradients)
 
-    def train(self, batches, config, verbose=False):
+    def train(self, config, train_batches, val_batches=None, verbose=False):
 
         """
         Train the Recurrent Neural Network.
 
         Args:
-            batches: (numpy array): Input data already processed into batches
-                                   by function.get_batches().
             config: Dictionary of parameters.
+            train_batches (numpy array): Training data already processed into
+                                         batches by functions.get_batches().
+            val_batches (numpy array): Validation data already processed
+                                       into batches by functions.get_batches().
+                                       If left at none, no validation
+                                       testing is performed.
             verbose (bool): Print outputs
 
         Returns:
@@ -95,15 +99,18 @@ class RNN:
         learning_rate = config['learning_rate']
         num_epochs = config['num_epochs']
         save_dir = config['save_dir']
-        show_every_n_batches = config['show_every_n_batches']
 
         with tf.Session(graph=self.train_graph) as sess:
             sess.run(tf.global_variables_initializer())
 
+            val_epoch_losses = []
+
             for epoch_i in range(num_epochs):
+
+                # Training
                 state = np.zeros([lstm_layers, 2, batch_size, rnn_size])  # init
 
-                for batch_i, (x, y) in enumerate(batches):
+                for batch_i, (x, y) in enumerate(train_batches):
                     feed = {
                         self.input_text: x,
                         self.targets: y,
@@ -116,11 +123,41 @@ class RNN:
                         print('Epoch {:>3} Batch {:>4}/{}   train_loss = {:.3f}'.format(
                             epoch_i,
                             batch_i,
-                            len(batches),
+                            len(train_batches),
                             train_loss))
+
+                # Validation
+                if val_batches is not None:
+
+                    state = np.zeros(
+                        [lstm_layers, 2, batch_size, rnn_size])  # init
+
+                    val_batch_losses = []
+
+                    for batch_i, (x, y) in enumerate(val_batches):
+                        feed = {
+                            self.input_text: x,
+                            self.targets: y,
+                            self.init_state: state,
+                            self.lr: learning_rate}
+                        val_loss, state = sess.run([self.cost, self.final_state], feed)
+
+                        val_batch_losses.append(val_loss)
+
+                    val_epoch_loss = np.mean(val_batch_losses)
+                    val_epoch_losses.append(val_epoch_loss)
+
+                    # Show validation loss after every epoch
+                    if verbose:
+                        print(
+                            'Epoch {:>3}   validation_loss = {:.3f}'.format(
+                                epoch_i,
+                                val_epoch_loss))
 
             # Save Model
             saver = tf.train.Saver()
             saver.save(sess, save_dir)
             if verbose:
                 print('Model Trained and Saved')
+
+        return val_epoch_losses
