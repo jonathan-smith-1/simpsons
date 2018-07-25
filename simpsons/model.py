@@ -111,8 +111,8 @@ class RNN:
                         self.lr: learning_rate}
                     train_loss, state, _ = sess.run([self.cost, self.final_state, self.train_op], feed)
 
-                    # Show every <show_every_n_batches> batches
-                    if verbose and (epoch_i * len(batches) + batch_i) % show_every_n_batches == 0:
+                    # Show training loss after every batch
+                    if verbose:
                         print('Epoch {:>3} Batch {:>4}/{}   train_loss = {:.3f}'.format(
                             epoch_i,
                             batch_i,
