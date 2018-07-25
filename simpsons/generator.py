@@ -4,10 +4,10 @@ import tensorflow as tf
 
 class ScriptGenerator:
 
-    def __init__(self, vocab_to_int, int_to_vocab, seq_length, token_dict):
+    def __init__(self, vocab_to_int, int_to_vocab, token_dict, config):
 
         self.vocab_to_int = vocab_to_int
-        self.seq_length = seq_length
+        self.seq_length = config['seq_length']
         self.token_dict = token_dict
         self.int_to_vocab = int_to_vocab
 
@@ -38,7 +38,9 @@ class ScriptGenerator:
         i = np.random.choice(range(len(probabilities)), p=probabilities)
         return int_to_vocab[i]
 
-    def generate(self, gen_length, prime_word, load_dir):
+    def generate(self, gen_length, prime_word, config):
+
+        load_dir = config['save_dir']
 
         loaded_graph = tf.Graph()
         with tf.Session(graph=loaded_graph) as sess:
@@ -53,8 +55,8 @@ class ScriptGenerator:
             # Sentences generation setup
             gen_sentences = [prime_word + ':']
             batch_size = 1
-            lstm_layers = 2  # TODO - Remove this
-            rnn_size = 512  # TODO - Remove this
+            lstm_layers = config['lstm_layers']
+            rnn_size = config['rnn_size']
             prev_state = state = np.zeros([lstm_layers, 2, batch_size, rnn_size])  # init
 
             # Generate sentences
