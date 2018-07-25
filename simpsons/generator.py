@@ -6,6 +6,8 @@ class ScriptGenerator:
 
     def __init__(self, vocab_to_int, int_to_vocab, token_dict, config):
 
+        np.random.seed(42)
+
         self.vocab_to_int = vocab_to_int
         self.seq_length = config['seq_length']
         self.token_dict = token_dict
@@ -57,7 +59,7 @@ class ScriptGenerator:
             batch_size = 1
             lstm_layers = config['lstm_layers']
             rnn_size = config['rnn_size']
-            prev_state = state = np.zeros([lstm_layers, 2, batch_size, rnn_size])  # init
+            prev_state = np.zeros([lstm_layers, 2, batch_size, rnn_size])  # init
 
             # Generate sentences
             for n in range(gen_length):

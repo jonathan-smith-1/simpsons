@@ -24,6 +24,8 @@ class RNN:
 
         with self.train_graph.as_default():
 
+            tf.set_random_seed(1234)
+
             vocab_size = len(int_to_vocab)
 
             self.input_text, self.targets, self.lr = get_inputs()
