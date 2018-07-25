@@ -42,8 +42,7 @@ class RNN:
                  for idx in range(lstm_layers)]
             )
 
-            cell = get_init_cell(input_data_shape[0], rnn_size,
-                                 dropout_keep_prob, lstm_layers)
+            cell = get_init_cell(rnn_size, dropout_keep_prob, lstm_layers)
 
             logits, self.final_state = build_nn(cell,
                                                 rnn_tuple_state,

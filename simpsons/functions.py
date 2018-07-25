@@ -22,12 +22,11 @@ def build_cell(num_units, keep_prob):
     return drop
 
 
-def get_init_cell(batch_size, rnn_size, keep_prob, lstm_layers):
+def get_init_cell(rnn_size, keep_prob, lstm_layers):
     """
     Create a multi-layered RNN Cell and initialize it.
 
     Args:
-        batch_size (int): Size of batches
         rnn_size (int): Size of RNN, i.e how many units.
         keep_prob (float): Dropout keep probability, in [0.0, 1.0].
         lstm_layers: Number of LSTM layers.
@@ -37,8 +36,6 @@ def get_init_cell(batch_size, rnn_size, keep_prob, lstm_layers):
         state input to the RNN
 
     """
-    # TODO - Investigate the init state - should be integrated in rnn, not cell
-
     cell = tf.nn.rnn_cell.MultiRNNCell(
         [build_cell(rnn_size, keep_prob) for _ in range(lstm_layers)])
 
