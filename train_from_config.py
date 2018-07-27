@@ -11,6 +11,7 @@ with open("config_tiny.yml", 'r') as stream:
         config = None
         print(exc)
 
+# TODO - May need to actually pre-process the data here
 
 # Get pre-procesed data
 int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
