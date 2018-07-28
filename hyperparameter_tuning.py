@@ -12,15 +12,14 @@ K_FOLDS = 4
 int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
 
 # Grid search of these parameters if performed
-params_grid = {'num_epochs': [2],
-               'batch_size': [256],
-               'rnn_size': [2, 3],
-               'embed_dim': [2],
-               'seq_length': [2],
-               'learning_rate': [0.01],
-               'show_every_n_batches': [100],
+params_grid = {'num_epochs': [150],
+               'batch_size': [200, 250],
+               'rnn_size': [250, 500, 750],
+               'embed_dim': [250],
+               'seq_length': [10, 15],
+               'learning_rate': [0.01, 0.005],
                'dropout_keep_prob': [0.9, 1.0],
-               'lstm_layers': [1],
+               'lstm_layers': [2, 3, 4],
                'save_dir': ['./save']}
 
 configs = generate_configs(params_grid)
