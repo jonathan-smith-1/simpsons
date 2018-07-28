@@ -3,7 +3,7 @@ from itertools import product
 
 def generate_configs(param_dict):
     """
-    Generate exhaustive configuration dictionaries of parameters.
+    Generate exhaustive configurations parameters for hyperparameter tuning.
 
     Args:
         param_dict: Dictionary of parameters of the form key:value where
