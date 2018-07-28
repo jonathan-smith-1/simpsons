@@ -1,11 +1,12 @@
 import numpy as np
+from random import seed, shuffle
 from sklearn.model_selection import KFold
 from simpsons.functions import get_batches
 import simpsons.helper as helper
 from hyperparameter_tuning_functions import generate_configs
 from simpsons.model import RNN
 
-K_FOLDS = 3
+K_FOLDS = 4
 
 # Get pre-procesed data
 int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
@@ -28,10 +29,14 @@ configs = generate_configs(params_grid)
 best_loss = np.inf
 best_config = None
 
+# Go through configs in random order
+seed(0)
+shuffle(configs)
+
 for config in configs:
+    print('')
     print('Running config:')
     print(config)
-    print('')
 
     # Get the batches of data.
     batches = get_batches(int_text, config)
@@ -73,5 +78,5 @@ for config in configs:
         best_config = config
         best_config['num_epochs'] = config_best_num_epochs
 
-print('Best config:')
-print(best_config)
+    print('Best config so far:')
+    print(best_config)
