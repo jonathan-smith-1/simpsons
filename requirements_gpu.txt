@@ -41,9 +41,11 @@ pywinpty==0.5.4
 PyYAML==3.13
 pyzmq==17.1.0
 qtconsole==4.3.1
+scikit-learn==0.19.2
 Send2Trash==1.5.0
 simplegeneric==0.8.1
 six==1.11.0
+sklearn==0.0
 tensorboard==1.9.0
 tensorflow-gpu==1.9.0
 termcolor==1.1.0
