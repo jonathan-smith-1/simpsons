@@ -2,14 +2,22 @@ import numpy as np
 from random import seed, shuffle
 from sklearn.model_selection import KFold
 from simpsons.functions import get_batches
-import simpsons.helper as helper
+from simpsons.helper import load_data, token_lookup, create_lookup_tables, \
+    preprocess_and_save_data, load_preprocess
 from hyperparameter_tuning_functions import generate_configs
 from simpsons.model import RNN
 
 K_FOLDS = 4
 
+# Load data
+data_dir = './data/simpsons/moes_tavern_lines.txt'
+text = load_data(data_dir)
+
+# Preprocess data
+preprocess_and_save_data(data_dir, token_lookup, create_lookup_tables)
+
 # Get pre-procesed data
-int_text, vocab_to_int, int_to_vocab, token_dict = helper.load_preprocess()
+int_text, vocab_to_int, int_to_vocab, token_dict = load_preprocess()
 
 # Grid search of these parameters if performed
 params_grid = {'num_epochs': [150],

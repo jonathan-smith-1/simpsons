@@ -15,9 +15,49 @@ def load_data(path):
     return data
 
 
+def create_lookup_tables(text):
+    """
+    Create lookup tables for vocabulary.
+
+    Args:
+        text: The text of tv scripts split into words
+
+    Returns:
+        A tuple of dicts (vocab_to_int, int_to_vocab)
+
+    """
+    vocab_to_int = {word: i for i, word in enumerate(set(text))}
+    int_to_vocab = {i: word for word, i in vocab_to_int.items()}
+
+    return vocab_to_int, int_to_vocab
+
+
+def token_lookup():
+    """
+    Generate a dict to turn punctuation into a token.
+
+    Returns:
+        Tokenized dictionary where the key is the punctuation and the
+        value is the token
+
+    """
+    punc_dict = {'.': '||period||',
+                 ',': '||comma||',
+                 '"': '||quotationmark||',
+                 ';': '||semicolon||',
+                 '!': '||exclamationmark||',
+                 '?': '||questionmark||',
+                 '(': '||leftparen||',
+                 ')': '||rightparen||',
+                 '--': '||dash||',
+                 '\n': '||return||'}
+
+    return punc_dict
+
+
 def preprocess_and_save_data(dataset_path, token_lookup, create_lookup_tables):
     """
-    Preprocess Text Data
+    Preprocess Text Data.
     """
     text = load_data(dataset_path)
     
