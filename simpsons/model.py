@@ -121,7 +121,7 @@ class RNN:
                     # Show training loss after every batch
                     if verbose:
                         print('Epoch {:>3} Batch {:>4}/{}   train_loss = {:.3f}'.format(
-                            epoch_i,
+                            epoch_i+1,
                             batch_i,
                             len(train_batches),
                             train_loss))
