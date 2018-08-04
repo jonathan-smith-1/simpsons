@@ -1,9 +1,9 @@
-num_epochs: 200
-batch_size: 256
-rnn_size: 512
-embed_dim: 256
+num_epochs: 11
+batch_size: 200
+rnn_size: 750
+embed_dim: 250
 seq_length: 10
-learning_rate: 0.01
+learning_rate: 0.005
 dropout_keep_prob: 0.9
 lstm_layers: 2
 save_dir: './save'
