@@ -5,7 +5,7 @@ from simpsons.helper import load_data, token_lookup, create_lookup_tables, \
 from simpsons.model import RNN
 
 # Config
-with open("config_tiny.yml", 'r') as stream:
+with open("config.yml", 'r') as stream:
     try:
         config = yaml.load(stream)
     except yaml.YAMLError as exc:

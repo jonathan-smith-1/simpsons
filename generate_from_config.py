@@ -3,7 +3,7 @@ import simpsons.helper as helper
 from simpsons.generator import ScriptGenerator
 
 # Config
-with open("config_tiny.yml", 'r') as stream:
+with open("config.yml", 'r') as stream:
     try:
         config = yaml.load(stream)
     except yaml.YAMLError as exc:
