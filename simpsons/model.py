@@ -122,7 +122,7 @@ class RNN:
                     if verbose:
                         print('Epoch {:>3} Batch {:>4}/{}   train_loss = {:.3f}'.format(
                             epoch_i+1,
-                            batch_i,
+                            batch_i+1,
                             len(train_batches),
                             train_loss))
 
@@ -151,7 +151,7 @@ class RNN:
                     if verbose:
                         print(
                             'Epoch {:>3}   validation_loss = {:.3f}'.format(
-                                epoch_i,
+                                epoch_i+1,
                                 val_epoch_loss))
 
             # Save Model
