@@ -79,8 +79,7 @@ data.
 - Obviously more data would help.  4000 lines of text and a large and 
 colloquial vocabulary make this a challenging dataset.
 - Transfer learning for word embeddings would help.  Either a shallow 
-embedding such as the well-known [word2vec](https://en.wikipedia
-.org/wiki/Word2vec) or [GloVe](https://nlp.stanford.edu/projects/glove/), or
+embedding such as the well-known [word2vec](https://en.wikipedia.org/wiki/Word2vec) or [GloVe](https://nlp.stanford.edu/projects/glove/), or
  something a little deeper such as one of Tensorflow Hub's [Text modules](https://www.tensorflow.org/hub/modules/text).
 
 
@@ -88,5 +87,5 @@ embedding such as the well-known [word2vec](https://en.wikipedia
 # Acknowledgements
 - The data and original code came from Udacity.  The code for pre-processing
  the text data is almost unchanged, but the rest has been updated by me.  
- The overall structure of the project is largely unchanged from the original
+- The overall structure of the project is largely unchanged from the original
   Udacity assignment.
